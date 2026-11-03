@@ -1,0 +1,9 @@
+[Unit]
+Description=Despliegue automático de Atlas (assistant-web) desde GitHub
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/assistant/web/deploy/auto-update.sh
+TimeoutStartSec=1800

@@ -132,6 +132,14 @@ PY
   fi
 fi
 
+say "5c/6 Despliegue automático (timer systemd, cada 5 min)"
+install -m 644 "$WEB/deploy/assistant-web-update.service" /etc/systemd/system/assistant-web-update.service
+install -m 644 "$WEB/deploy/assistant-web-update.timer" /etc/systemd/system/assistant-web-update.timer
+chmod +x "$WEB/deploy/auto-update.sh"
+systemctl daemon-reload
+systemctl enable --now assistant-web-update.timer
+systemctl list-timers assistant-web-update.timer --no-pager | head -3
+
 say "6/6 Verificación"
 for i in $(seq 1 30); do
   code="$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3100/login || true)"

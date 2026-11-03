@@ -1,0 +1,10 @@
+[Unit]
+Description=Revisa cada 5 minutos si hay una nueva versión de Atlas
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

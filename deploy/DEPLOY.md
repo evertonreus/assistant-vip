@@ -26,7 +26,15 @@ Qué hace (con respaldo previo de cada archivo que toca):
 3. Agrega el servicio `web` a `/opt/assistant/compose.yaml` (solo la primera vez; valida antes de usar).
 4. Construye y arranca `assistant-web` (127.0.0.1:3100).
 5. Agrega el sitio a Caddy y cierra desde internet los webhooks `assistant-*` de n8n.
-6. Verifica: página local, redirección a login, bloqueo de webhooks y DNS.
+6. Activa el **despliegue automático** (timer systemd `assistant-web-update`).
+7. Verifica: página local, redirección a login, bloqueo de webhooks y DNS.
+
+## Actualizaciones automáticas
+Después de la primera instalación no hay que hacer nada: cada 5 minutos la VPS revisa `main` en GitHub y, si hay un commit nuevo, lo descarga, reconstruye `assistant-web` y comprueba que responda.
+- Si la compilación falla, sigue corriendo la versión anterior, el código vuelve al último commit bueno y aparece una **alerta** en la página (no se reintenta ese mismo commit).
+- Bitácora: `/var/log/assistant-web-deploy.log`. Estado del timer: `systemctl list-timers assistant-web-update.timer`.
+- Pausar: `systemctl stop assistant-web-update.timer` · Reanudar: `systemctl start assistant-web-update.timer`.
+- Forzar ahora: `systemctl start assistant-web-update.service`.
 
 ## 3. DNS
 Registro A: `atlas.makein3d.mx` → `2.24.100.201`. Caddy obtiene el certificado HTTPS solo.
